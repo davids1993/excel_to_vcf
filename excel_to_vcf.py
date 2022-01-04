@@ -1,7 +1,4 @@
 #get excel file location
-from os import mkdir, rmdir
-
-
 def get_excel_file():
     import tkinter as tk
     from tkinter import filedialog
@@ -101,7 +98,7 @@ def merge_files(file_location):
             with open(fname, 'r') as infile:
                 outfile.write(infile.read())
 
-print("\n\nThe excel file should have the following columns in the order below:")
+print("\n\nThe excel file should contain the following header columns:")
 print("Name, Email, Phone, Title")
 input("\nPress enter to continue.")
 
