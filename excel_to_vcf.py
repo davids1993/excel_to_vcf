@@ -56,22 +56,26 @@ def contacts_to_vcf(contacts):
     vcfs = []
     for contact in contacts:
         vcard = vobject.vCard()
-        vcard.add('n')
-        vcard.n.value = vobject.vcard.Name(family=contact['name'])
-        vcard.add('fn')
-        vcard.fn.value = contact['name']
-        vcard.add('email')
-        vcard.email.value = contact['email']
-        vcard.email.type_param = 'INTERNET'
-        vcard.add('tel')
-        vcard.tel.value = contact['phone']
-        vcard.tel.type_param = 'CELL'
-        if 'phone2' in contact:
+        # vcard.add('n')
+        # vcard.n.value = vobject.vcard.Name(family=contact['name'])
+        if contact['name']:
+            vcard.add('fn')
+            vcard.fn.value = contact['name']
+        if contact['email']:
+            vcard.add('email')
+            vcard.email.value = contact['email']
+            vcard.email.type_param = 'INTERNET'
+        if contact['phone']:
+            vcard.add('tel')
+            vcard.tel.value = contact['phone']
+            vcard.tel.type_param = 'CELL'
+        if 'phone2' in contact and contact['phone2']:
             vcard.add('tel2')
             vcard.tel2.value = contact['phone2']
             vcard.tel2.type_param = 'WORK'
-        vcard.add('title')
-        vcard.title.value = contact['title']
+        if contact['title']:
+            vcard.add('title')
+            vcard.title.value = contact['title']
         vcfs.append(vcard)
     return vcfs
 
@@ -99,8 +103,12 @@ def save_vcfs(file_location, vcfs):
     os.chdir(file_location)
     os.chdir('contacts')
     for vcf in vcfs:
-        with open(f'{vcf.fn.value}.vcf', 'w') as f:
-            f.write(vcf.serialize())
+        try:
+            with open(f'{vcf.fn.value}.vcf', 'w') as f:
+                f.write(vcf.serialize())
+        except:
+            print(f"{vcf.fn.value} doesn't exists")
+
             
 #get path without the file name
 def get_path(file_location):
@@ -116,8 +124,10 @@ def merge_files(file_location):
     os.chdir('contacts')
     files = glob.glob('*.vcf')
     save_path = os.path.join(file_location, 'merged_contacts')
+
     with open(os.path.join(save_path, 'contacts.vcf'), 'w') as outfile:
         for fname in files:
             with open(fname, 'r') as infile:
                 outfile.write(infile.read())
+
                 
