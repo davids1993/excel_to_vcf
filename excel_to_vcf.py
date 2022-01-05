@@ -45,6 +45,8 @@ def import_contacts(file_location):
         contact['email'] = sheet[headers['email'] + str(row)].value
         contact['phone'] = sheet[headers['phone'] + str(row)].value
         contact['title'] = sheet[headers['title'] + str(row)].value
+        if 'phone2' in headers:
+            contact['phone2'] = sheet[headers['phone2'] + str(row)].value
         contacts.append(contact)
     return contacts
 
@@ -64,6 +66,10 @@ def contacts_to_vcf(contacts):
         vcard.add('tel')
         vcard.tel.value = contact['phone']
         vcard.tel.type_param = 'CELL'
+        if 'phone2' in contact:
+            vcard.add('tel2')
+            vcard.tel2.value = contact['phone2']
+            vcard.tel2.type_param = 'WORK'
         vcard.add('title')
         vcard.title.value = contact['title']
         vcfs.append(vcard)
