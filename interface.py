@@ -28,6 +28,7 @@ def show_link(file_location):
 if __name__ == '__main__':
     select_file_message()
     file_location = get_excel_file()
+    check_file_type(file_location)
     create_folder(file_location)
     contacts = import_contacts(file_location)
     vcfs = contacts_to_vcf(contacts)

@@ -8,6 +8,22 @@ def get_excel_file():
     root.withdraw()
     return filedialog.askopenfilename()
 
+#check file type matches xlsx,.xlsm,.xltx,.xltm
+def check_file_type(file_location):
+    import pathlib
+    file_location = pathlib.Path(file_location)
+    file_type = file_location.suffix
+    if file_type == '.xlsx' or file_type == '.xlsm' or file_type == '.xltx' or file_type == '.xltm':
+        return True
+    else:
+        import sys
+        import tkinter as tk
+        from tkinter import messagebox
+        root = tk.Tk()
+        root.withdraw()
+        messagebox.showerror('Error', f'File type {file_type} is not supported')
+        sys.exit()
+
 
 #get the first row of an excel spreadsheet as a dictionary key with column letter as value
 def get_headers(sheet):
