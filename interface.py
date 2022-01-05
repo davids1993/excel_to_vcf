@@ -25,7 +25,7 @@ def show_link(file_location):
     
     
     
-if '__main__' == __name__:
+if __name__ == '__main__':
     select_file_message()
     file_location = get_excel_file()
     create_folder(file_location)

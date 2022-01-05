@@ -19,7 +19,7 @@ def get_headers(sheet):
 #check if name, email, phone, and title are in the excel spreadsheet headers
 def check_headers(sheet):
     headers = get_headers(sheet)
-    if 'name' in headers and 'email' in headers and 'phone' in headers and 'title' in headers:
+    if 'name' in headers and 'phone' in headers:
         return True
     else:
         import sys
@@ -27,7 +27,7 @@ def check_headers(sheet):
         from tkinter import messagebox
         root = tk.Tk()
         root.withdraw()
-        messagebox.showerror('Error', 'One of these headers is missing: name, email, phone, title')
+        messagebox.showerror('Error', 'One of these headers is missing: name, phone')
         sys.exit()
     
 
@@ -42,13 +42,21 @@ def import_contacts(file_location):
     for row in range(2, sheet.max_row + 1):
         contact = {}
         contact['name'] = sheet[headers['name'] + str(row)].value
-        contact['email'] = sheet[headers['email'] + str(row)].value
         contact['phone'] = sheet[headers['phone'] + str(row)].value
-        contact['title'] = sheet[headers['title'] + str(row)].value
+        if 'email' in headers:
+            contact['email'] = sheet[headers['email'] + str(row)].value
+        if 'title' in headers:
+            contact['title'] = sheet[headers['title'] + str(row)].value
         if 'phone2' in headers:
             contact['phone2'] = sheet[headers['phone2'] + str(row)].value
         contacts.append(contact)
     return contacts
+
+#remove characters that are not allowed in vcf files
+def remove_chars(string):
+    import re
+    string = re.sub(r'[^\w]', ' ', string)
+    return string
 
 #convert contacts to .vcf
 def contacts_to_vcf(contacts):
@@ -60,22 +68,22 @@ def contacts_to_vcf(contacts):
         # vcard.n.value = vobject.vcard.Name(family=contact['name'])
         if contact['name']:
             vcard.add('fn')
-            vcard.fn.value = contact['name']
-        if contact['email']:
-            vcard.add('email')
-            vcard.email.value = contact['email']
-            vcard.email.type_param = 'INTERNET'
+            vcard.fn.value = remove_chars(contact['name'])
         if contact['phone']:
             vcard.add('tel')
-            vcard.tel.value = contact['phone']
+            vcard.tel.value = remove_chars(contact['phone'])
             vcard.tel.type_param = 'CELL'
+        if 'email' in contact and contact['email']:
+            vcard.add('email')
+            vcard.email.value = remove_chars(contact['email'])
+            vcard.email.type_param = 'INTERNET'
         if 'phone2' in contact and contact['phone2']:
             vcard.add('tel2')
-            vcard.tel2.value = contact['phone2']
+            vcard.tel2.value = remove_chars(contact['phone2'])
             vcard.tel2.type_param = 'WORK'
-        if contact['title']:
+        if 'title' in contact and contact['title']:
             vcard.add('title')
-            vcard.title.value = contact['title']
+            vcard.title.value = remove_chars(contact['title'])
         vcfs.append(vcard)
     return vcfs
 
