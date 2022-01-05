@@ -1,3 +1,5 @@
+# from interface import missing_headers
+
 #get excel file location
 def get_excel_file():
     import tkinter as tk
@@ -14,6 +16,20 @@ def get_headers(sheet):
         headers[sheet.cell(row=1, column=column).value] = sheet.cell(row=1, column=column).column_letter
     return headers
 
+#check if name, email, phone, and title are in the excel spreadsheet headers
+def check_headers(sheet):
+    headers = get_headers(sheet)
+    if 'name' in headers and 'email' in headers and 'phone' in headers and 'title' in headers:
+        return True
+    else:
+        import sys
+        import tkinter as tk
+        from tkinter import messagebox
+        root = tk.Tk()
+        root.withdraw()
+        messagebox.showerror('Error', 'One of these headers is missing: name, email, phone, title')
+        sys.exit()
+    
 
 #import excel contact list and map columns to headers
 def import_contacts(file_location):
@@ -21,6 +37,7 @@ def import_contacts(file_location):
     wb = openpyxl.load_workbook(file_location)
     sheet = wb['Sheet1']
     headers = get_headers(sheet)
+    check_headers(sheet)
     contacts = []
     for row in range(2, sheet.max_row + 1):
         contact = {}
@@ -97,17 +114,4 @@ def merge_files(file_location):
         for fname in files:
             with open(fname, 'r') as infile:
                 outfile.write(infile.read())
-
-print("\n\nThe excel file should contain the following header columns:")
-print("Name, Email, Phone, Title")
-input("\nPress enter to continue.")
-
-
-
-file_location = get_excel_file()
-create_folder(file_location)
-contacts = import_contacts(file_location)
-vcfs = contacts_to_vcf(contacts)
-save_vcfs(file_location,vcfs)
-merge_files(file_location)
-
+                
