@@ -6,7 +6,7 @@ def select_file_message():
     from tkinter import messagebox
     root = tk.Tk()
     root.withdraw()
-    messagebox.showinfo('Select File', 'Please select an excel file to convert to vcf')
+    messagebox.showinfo('Select File', 'Please select an excel file to convert to vcf') 
 
 
 def message_contacts_converted():

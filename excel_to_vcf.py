@@ -45,13 +45,12 @@ def check_headers(sheet):
         root.withdraw()
         messagebox.showerror('Error', 'One of these headers is missing: name, phone')
         sys.exit()
-    
 
 #import excel contact list and map columns to headers
 def import_contacts(file_location):
     import openpyxl
     wb = openpyxl.load_workbook(file_location)
-    sheet = wb['Sheet1']
+    sheet = wb.worksheets[0]
     headers = get_headers(sheet)
     check_headers(sheet)
     contacts = []
